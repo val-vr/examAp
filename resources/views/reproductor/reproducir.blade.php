@@ -9,23 +9,36 @@
     <img src="{{ $cancion->album->portada }}" alt="{{ $cancion->album->nombre }}" width="200">
 
     <div class="player-controls">
-        <button id="prevBtn" class="btn btn-secondary" onclick="anteriorCancion()">Anterior</button>
-        <button id="nextBtn" class="btn btn-secondary" onclick="siguienteCancion()">Siguiente</button>
+        <button id="prevBtn" class="btn btn-secondary" onclick="anteriorCancion()" {{ $esPrimera ? 'disabled' : '' }}>Anterior</button>
+        <button id="nextBtn" class="btn btn-secondary" onclick="siguienteCancion()" {{ $esUltima ? 'disabled' : '' }}>Siguiente</button>
+        <button id="randomBtn" class="btn btn-secondary" onclick="cancionAleatoria()">Aleatoria</button>
     </div>
 </div>
 
 @section('js')
 <script>
+    let todosIds = @json($todosIds);
+    let idActual = {{ $cancion->id_C }};
+    
     function anteriorCancion() {
-        let currentId = {{ $cancion->id_C }};
-        let prevId = currentId - 1; // Lógica simple para ir a la canción anterior
-        window.location.href = `/reproducir/${prevId}`;
+        let indiceActual = todosIds.indexOf(idActual);
+        if (indiceActual > 0) {
+            let idAnterior = todosIds[indiceActual - 1];
+            window.location.href = `/reproducir/${idAnterior}`;
+        }
     }
 
     function siguienteCancion() {
-        let currentId = {{ $cancion->id_C }};
-        let nextId = currentId + 1; // Lógica simple para ir a la siguiente canción
-        window.location.href = `/reproducir/${nextId}`;
+        let indiceActual = todosIds.indexOf(idActual);
+        if (indiceActual < todosIds.length - 1) {
+            let idSiguiente = todosIds[indiceActual + 1];
+            window.location.href = `/reproducir/${idSiguiente}`;
+        }
+    }
+
+    function cancionAleatoria() {
+        let idAleatorio = todosIds[Math.floor(Math.random() * todosIds.length)];
+        window.location.href = `/reproducir/${idAleatorio}`;
     }
 </script>
 @endsection

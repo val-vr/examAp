@@ -11,18 +11,18 @@
                 <input type="text" id="id_C" name="id_C" class="form-control" value="{{ request('id_C') }}">
             </div>
             <div class="col-md-3">
-                <label for="orderBy">Ordenar por:</label>
-                <select name="orderBy" id="orderBy" class="form-control">
-                    <option value="id_C" {{ request('orderBy') == 'id_C' ? 'selected' : '' }}>ID</option>
-                    <option value="nombre" {{ request('orderBy') == 'nombre' ? 'selected' : '' }}>Nombre Canción</option>
-                    <option value="duracion" {{ request('orderBy') == 'duracion' ? 'selected' : '' }}>Duración</option>
+                <label for="ordenarPor">Ordenar por:</label>
+                <select name="ordenarPor" id="ordenarPor" class="form-control">
+                    <option value="id_C" {{ request('ordenarPor') == 'id_C' ? 'selected' : '' }}>ID</option>
+                    <option value="nombre" {{ request('ordenarPor') == 'nombre' ? 'selected' : '' }}>Nombre Canción</option>
+                    <option value="duracion" {{ request('ordenarPor') == 'duracion' ? 'selected' : '' }}>Duración</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="order">Orden:</label>
-                <select name="order" id="order" class="form-control">
-                    <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascendente</option>
-                    <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descendente</option>
+                <label for="orden">Orden:</label>
+                <select name="orden" id="orden" class="form-control">
+                    <option value="asc" {{ request('orden') == 'asc' ? 'selected' : '' }}>Ascendente</option>
+                    <option value="desc" {{ request('orden') == 'desc' ? 'selected' : '' }}>Descendente</option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -45,7 +45,7 @@
             </tr>
         </thead>
         <tbody id="songs-table-body">
-            @forelse ($cancions as $cancion)
+            @forelse ($canciones as $cancion)
                 <tr>
                     <td>{{ $cancion->id_C }}</td>
                     <td>{{ $cancion->nombre }}</td>
@@ -57,7 +57,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7">No se encontraron canciones.</td>
+                    <td colspan="6">No se encontraron canciones.</td>
                 </tr>
             @endforelse
         </tbody>

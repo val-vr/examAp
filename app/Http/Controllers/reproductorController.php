@@ -2,38 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Cancion;
-use App\Models\Artista;
-use App\Models\Album;
+use Illuminate\Http\Request;
 
 class ReproductorController extends Controller
 {
     public function index(Request $request)
-{
-    
-    $query = Cancion::with('artista', 'album');
+    {
+        $consulta = Cancion::query();
 
-    
-    if ($request->filled('id_C')) {
-        $query->where('id_C', $request->id_C); 
+        if ($request->has('id_C')) {
+            $consulta->where('id_C', $request->input('id_C'));
+        }
+
+        if ($request->has('ordenarPor') && $request->has('orden')) {
+            $consulta->orderBy($request->input('ordenarPor'), $request->input('orden'));
+        }
+
+        $canciones = $consulta->get();
+
+        return view('reproductor.index', compact('canciones'));
     }
 
+    public function reproducir($id_C)
+    {
+        $cancion = Cancion::findOrFail($id_C);
+        $totalCanciones = Cancion::count();
 
-    $orderBy = $request->input('orderBy', 'id_C');
-    $order = $request->input('order', 'asc');
-    $query->orderBy($orderBy, $order);
+        $primerId = Cancion::orderBy('id_C', 'asc')->first()->id_C;
+        $ultimoId = Cancion::orderBy('id_C', 'desc')->first()->id_C;
 
+        $esPrimera = ($id_C == $primerId);
+        $esUltima = ($id_C == $ultimoId);
 
-    $cancions = $query->get();
+        // Obtener todos los IDs de canciones en orden ascendente
+        $todosIds = Cancion::orderBy('id_C', 'asc')->pluck('id_C')->toArray();
 
-    return view('reproductor.index', compact('cancions'));
-}
-
-public function reproducir($id)
-{
-    $cancion = Cancion::with('artista', 'album')->findOrFail($id);
-    return view('reproductor.reproducir', compact('cancion'));
-}
-
+        return view('reproductor.reproducir', compact('cancion', 'totalCanciones', 'esPrimera', 'esUltima', 'primerId', 'ultimoId', 'todosIds'));
+    }
 }
